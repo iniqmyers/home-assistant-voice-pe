@@ -67,6 +67,8 @@ esp32:
 
 wifi:
   id: wifi_id
+  ssid: "MontagnaFeratta"
+  password: "zigbeeforyouandmee"
   fast_connect: ${hidden_ssid}
   on_connect:
     - lambda: id(improv_ble_in_progress) = false;
@@ -92,8 +94,8 @@ ota:
 
 i2c:
   - id: internal_i2c
-    sda: GPIO5
-    scl: GPIO6
+    sda: GPIO15
+    scl: GPIO16
     frequency: 400kHz
 
 psram:
@@ -231,7 +233,7 @@ switch:
       - delay: 15min
       - switch.turn_off: timer_ringing
   - platform: gpio
-    pin: GPIO47
+    pin: GPIO17
     id: internal_speaker_amp
     name: "Internal speaker amp"
     entity_category: config
@@ -243,7 +245,7 @@ binary_sensor:
   - platform: gpio
     id: center_button
     pin:
-      number: GPIO0
+      number: GPIO18
       inverted: true
     on_press:
       - script.execute: control_leds
@@ -462,7 +464,7 @@ binary_sensor:
   - platform: gpio
     id: hardware_mute_switch
     internal: true
-    pin: GPIO3
+    pin: GPIO42
     on_press:
       - script.execute:
           id: play_sound
@@ -487,7 +489,7 @@ binary_sensor:
       - delayed_on: 200ms
       - delayed_off: 200ms
     pin:
-      number: GPIO17
+      number: GPIO41
     # When the jack is plugged in:
     #  - LED animation
     #  - Sound played
@@ -521,7 +523,7 @@ light:
   # Hardware LED ring. Not used because remapping needed
   - platform: esp32_rmt_led_strip
     id: leds_internal
-    pin: GPIO21
+    pin: GPIO9
     chipset: WS2812
     max_refresh_rate: 15ms
     num_leds: 12
@@ -909,14 +911,14 @@ light:
 
 power_supply:
   - id: led_power
-    pin: GPIO45
+    pin: GPIO40
 
 sensor:
   # The dial. Used to control volume and Hue of the LED ring.
   - platform: rotary_encoder
     id: dial
-    pin_a: GPIO16
-    pin_b: GPIO18
+    pin_a: GPIO1
+    pin_b: GPIO46
     resolution: 2
     on_clockwise:
       - lambda: id(dial_touched) = true;
@@ -1376,47 +1378,58 @@ i2s_audio:
   - id: i2s_output
     # i2s_output data pin is gpio10
     i2s_lrclk_pin:
-      number: GPIO7
+      number: GPIO6
     i2s_bclk_pin:
-      number: GPIO8
+      number: GPIO7
 
   - id: i2s_input
     # data line is GPIO15
     i2s_lrclk_pin:
-      number: GPIO14
+      number: GPIO3
     i2s_bclk_pin:
-      number: GPIO13
+      number: GPIO2
 
 microphone:
   - platform: nabu_microphone
-    i2s_din_pin: GPIO15
+    i2s_din_pin: GPIO4
     adc_type: external
     pdm: false
     sample_rate: 16000
     bits_per_sample: 32bit
-    i2s_mode: secondary
+    #i2s_mode: secondary
     i2s_audio_id: i2s_input
     channel_0:
       id: asr_mic
       amplify_shift: 0
-    channel_1:
-      id: comm_mic
-      amplify_shift: 2
+#    channel_1:
+#      id: comm_mic
+#      amplify_shift: 2
+
+#microphone:
+#  - platform: i2s_audio
+#    id: asr_mic
+#    i2s_din_pin: GPIO4
+#    adc_type: external
+#    pdm: false
+#    sample_rate: 16000
+#    bits_per_sample: 32bit
+#    i2s_audio_id: i2s_input
+#    channel: left
 
 speaker:
   # Hardware speaker output
   - platform: i2s_audio
     id: i2s_audio_speaker
     sample_rate: 48000
-    i2s_mode: secondary
-    i2s_dout_pin: GPIO10
+    #i2s_mode: secondary
+    i2s_dout_pin: GPIO8
     bits_per_sample: 32bit
     i2s_audio_id: i2s_output
     dac_type: external
-    channel: stereo
+    channel: mono #stereo
     timeout: never
     buffer_duration: 100ms
-    audio_dac: aic3204_dac
+    #audio_dac: aic3204_dac
 
   # Virtual speakers to combine the announcement and media streams together into one output
   - platform: mixer
@@ -1518,18 +1531,18 @@ media_player:
       - id: error_cloud_expired
         file: https://github.com/esphome/home-assistant-voice-pe/raw/dev/sounds/error_cloud_expired.mp3
 
-voice_kit:
-  i2c_id: internal_i2c
-  reset_pin: GPIO4
-  firmware:
-    url: https://github.com/esphome/voice-kit-xmos-firmware/releases/download/v1.3.1/ffva_v1.3.1_upgrade.bin
-    version: "1.3.1"
-    md5: 964635c5bf125529dab14a2472a15401
+#voice_kit:
+#  i2c_id: internal_i2c
+#  reset_pin: GPIO39
+#  firmware:
+#    url: https://github.com/esphome/voice-kit-xmos-firmware/releases/download/v1.3.1/ffva_v1.3.1_upgrade.bin
+#    version: "1.3.1"
+#    md5: 964635c5bf125529dab14a2472a15401
 
 external_components:
   - source:
       type: git
-      url: https://github.com/esphome/home-assistant-voice-pe
+      url: https://github.com/iniqmyers/home-assistant-voice-pe
       ref: dev
     components:
       - micro_wake_word
@@ -1539,10 +1552,10 @@ external_components:
       - voice_kit
     refresh: 0s
 
-audio_dac:
-  - platform: aic3204
-    id: aic3204_dac
-    i2c_id: internal_i2c
+#audio_dac:
+#  - platform: aic3204
+#    id: aic3204_dac
+#    i2c_id: internal_i2c
 
 micro_wake_word:
   id: mww
@@ -1557,7 +1570,7 @@ micro_wake_word:
       id: stop
       internal: true
   vad:
-  microphone: comm_mic
+  microphone: asr_mic  #comm_mic
   on_wake_word_detected:
     # If the wake word is detected when the device is muted (Possible with the software mute switch): Do nothing
     - if:

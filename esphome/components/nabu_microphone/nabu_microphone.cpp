@@ -19,7 +19,7 @@ namespace nabu_microphone {
 static const size_t RING_BUFFER_LENGTH = 64;  // Measured in milliseconds
 static const size_t QUEUE_LENGTH = 10;
 
-static const size_t NUMBER_OF_CHANNELS = 2;
+static const size_t NUMBER_OF_CHANNELS = 1;
 static const size_t DMA_BUFFER_SIZE = 160;
 static const size_t DMA_BUFFERS_COUNT = 4;
 static const size_t FRAMES_IN_ALL_DMA_BUFFERS = DMA_BUFFER_SIZE * DMA_BUFFERS_COUNT;
@@ -137,7 +137,7 @@ esp_err_t NabuMicrophone::start_i2s_driver_() {
       .mode = (i2s_mode_t) (this->i2s_mode_ | I2S_MODE_RX),
       .sample_rate = this->sample_rate_,
       .bits_per_sample = this->bits_per_sample_,
-      .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
+      .channel_format = I2S_CHANNEL_FMT_LEFT,
       .communication_format = I2S_COMM_FORMAT_STAND_I2S,
       .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
       .dma_buf_count = DMA_BUFFERS_COUNT,

@@ -1726,10 +1726,3 @@ button:
 
 debug:
   update_interval: 5s
-
-esp32_ble_tracker:
-    scan_parameters:
-      active: True
-
-bluetooth_proxy:
-  active: false

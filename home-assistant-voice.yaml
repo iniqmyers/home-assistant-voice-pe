@@ -80,6 +80,7 @@ captive_portal:
 
 improv_serial:
 
+
 logger:
   level: DEBUG
   logs:
@@ -249,7 +250,7 @@ binary_sensor:
   - platform: gpio
     id: center_button
     pin:
-      number: GPIO18
+      number: GPIO21
       inverted: true
     on_press:
       - script.execute: control_leds

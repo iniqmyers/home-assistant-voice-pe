@@ -251,7 +251,10 @@ binary_sensor:
     id: center_button
     pin:
       number: GPIO10
-      inverted: false #true
+      inverted: true
+      mode:
+        input: true
+        pullup: true
     on_press:
       - script.execute: control_leds
     on_release:

@@ -76,6 +76,10 @@ wifi:
   on_disconnect:
     - script.execute: control_leds
 
+captive_portal:
+
+improv_serial:
+
 logger:
   level: DEBUG
   logs:

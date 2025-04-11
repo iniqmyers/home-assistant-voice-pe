@@ -250,8 +250,8 @@ binary_sensor:
   - platform: gpio
     id: center_button
     pin:
-      number: GPIO21
-      inverted: true
+      number: GPIO10
+      inverted: false #true
     on_press:
       - script.execute: control_leds
     on_release:

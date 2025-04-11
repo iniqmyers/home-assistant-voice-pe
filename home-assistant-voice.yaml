@@ -1568,11 +1568,13 @@ external_components:
 micro_wake_word:
   id: mww
   models:
+    - model: https://github.com/kahrendt/microWakeWord/releases/download/v2.1_models/alexa.json
+      id: alexa
     - model: https://github.com/kahrendt/microWakeWord/releases/download/okay_nabu_20241226.3/okay_nabu.json
       id: okay_nabu
-    - model: hey_jarvis
+    - model: https://github.com/kahrendt/microWakeWord/releases/download/v2.1_models/hey_jarvis.json
       id: hey_jarvis
-    - model: hey_mycroft
+    - model: https://github.com/kahrendt/microWakeWord/releases/download/v2.1_models/hey_mycroft.json
       id: hey_mycroft
     - model: https://github.com/kahrendt/microWakeWord/releases/download/stop/stop.json
       id: stop
@@ -1724,3 +1726,14 @@ button:
 
 debug:
   update_interval: 5s
+
+
+packages:
+  esphome.bluetooth-proxy: github://esphome/bluetooth-proxies/esp32-generic.yaml@main
+
+esp32_ble_tracker:
+    scan_parameters:
+      active: True
+
+bluetooth_proxy:
+  active: false

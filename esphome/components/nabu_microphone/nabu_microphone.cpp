@@ -279,7 +279,7 @@ void NabuMicrophone::read_task_(void *params) {
 
               const size_t samples_read = bytes_read / sizeof(int32_t);
               const size_t frames_read =
-                  samples_read / NUMBER_OF_CHANNELS;  // Left and right channel samples combine into 1 frame
+                  samples_read  // / NUMBER_OF_CHANNELS;  // Left and right channel samples combine into 1 frame
 
               uint8_t channel_0_shift = 16;
               if (this_microphone->channel_0_ != nullptr) {
@@ -299,7 +299,7 @@ void NabuMicrophone::read_task_(void *params) {
 
                 int32_t channel_1_sample = 0;
                 if ((this_microphone->channel_1_ != nullptr) && (!this_microphone->channel_1_->get_mute_state())) {
-                  channel_1_sample = buffer[NUMBER_OF_CHANNELS * i + 1] >> channel_1_shift;
+                  channel_1_sample = buffer[NUMBER_OF_CHANNELS * i ] >> channel_1_shift;
                   channel_1_samples[i] = (int16_t) clamp<int32_t>(channel_1_sample, INT16_MIN, INT16_MAX);
                 }
               }

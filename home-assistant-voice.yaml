@@ -1401,9 +1401,9 @@ microphone:
     channel_0:
       id: asr_mic
       amplify_shift: 0
-#    channel_1:
-#      id: comm_mic
-#      amplify_shift: 2
+    channel_1:
+      id: comm_mic
+      amplify_shift: 2
 
 #microphone:
 #  - platform: i2s_audio
@@ -1570,7 +1570,7 @@ micro_wake_word:
       id: stop
       internal: true
   vad:
-  microphone: asr_mic  #comm_mic
+  microphone: comm_mic
   on_wake_word_detected:
     # If the wake word is detected when the device is muted (Possible with the software mute switch): Do nothing
     - if:

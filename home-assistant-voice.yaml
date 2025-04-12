@@ -245,7 +245,44 @@ switch:
     restore_mode: ALWAYS_OFF
     internal: true
 
+
+  # Hardware mute switch (Side of the device)
+  - platform: template
+    id: hardware_mute_switch
+    internal: true
+    optimistic: true
+    on_turn_on:
+      - script.execute:
+          id: play_sound
+          priority: false
+          sound_file: !lambda return id(mute_switch_on_sound);
+      - switch.template.publish:
+          id: master_mute_switch
+          state: ON
+    on_turn_off:
+      - script.execute:
+          id: play_sound
+          priority: false
+          sound_file: !lambda return id(mute_switch_off_sound);
+      - switch.template.publish:
+          id: master_mute_switch
+          state: OFF
+
 binary_sensor:
+    # Mute Toggle Button
+  - platform: gpio
+    id: mute_button
+    name: "Mute Button"
+    pin:
+      number: GPIO42
+      inverted: True
+      mode:
+        input: True
+        pullup: True
+    on_press:
+      then:
+        - switch.toggle: hardware_mute_switch
+  
   # Center Button. Used for many things (See on_multi_click)
   - platform: gpio
     id: center_button
@@ -468,27 +505,27 @@ binary_sensor:
                     effect: "none"
                 - lambda: id(factory_reset_requested) = true;
 
-  # Hardware mute switch (Side of the device)
-  - platform: gpio
-    id: hardware_mute_switch
-    internal: true
-    pin: GPIO42
-    on_press:
-      - script.execute:
-          id: play_sound
-          priority: false
-          sound_file: !lambda return id(mute_switch_on_sound);
-      - switch.template.publish:
-          id: master_mute_switch
-          state: ON
-    on_release:
-      - script.execute:
-          id: play_sound
-          priority: false
-          sound_file: !lambda return id(mute_switch_off_sound);
-      - switch.template.publish:
-          id: master_mute_switch
-          state: OFF
+  # Hardware mute switch (Side of the device) *OLD IMPLEMENTATION
+#  - platform: gpio
+#    id: hardware_mute_switch
+#    internal: true
+#    pin: GPIO42
+#    on_press:
+#      - script.execute:
+#          id: play_sound
+#          priority: false
+#          sound_file: !lambda return id(mute_switch_on_sound);
+#      - switch.template.publish:
+#          id: master_mute_switch
+#          state: ON
+#    on_release:
+#      - script.execute:
+#          id: play_sound
+#          priority: false
+#          sound_file: !lambda return id(mute_switch_off_sound);
+#      - switch.template.publish:
+#          id: master_mute_switch
+#          state: OFF
   # Audio Jack Plugged sensor
   - platform: gpio
     id: jack_plugged

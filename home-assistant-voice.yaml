@@ -185,7 +185,7 @@ display:
 
       // These lines could instead come from something like a text sensor.
       std::string line1 = id(text_line1);
-      int length1 = strlen(line1);
+      int length1 = line1.size();
       if (length1 > $lcd_width) length1 = $lcd_width;
       
       std::string line2 = id(text_output);
@@ -200,11 +200,11 @@ display:
       it.printf("%.*s%s%.*s", length1, line1 + p1, spaces, length2, line2 + p2);
 
       p1++;
-      if(p1 > (int)line1.size() - $lcd_width) {
+      if(p1 > line1.size() - $lcd_width) {
         p1 = 0;
       }
       p2++;
-      if(p2 > (int)line2.size() - $lcd_width) {
+      if(p2 > line2.size() - $lcd_width) {
         p2 = 0;
       }
 

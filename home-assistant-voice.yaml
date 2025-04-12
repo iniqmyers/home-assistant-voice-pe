@@ -162,13 +162,16 @@ globals:
     restore_value: no
     initial_value: 'false'
 
+  - id: text_output
+    type: std::string
+
 display:
   - platform: lcd_pcf8574
     id: lcd_display
     dimensions: 16x2
     address: 0x27
     lambda: |-
-      it.print("Hello World!");
+      it.print(id(text_output));
 
 
 switch:
@@ -1725,7 +1728,12 @@ voice_assistant:
   on_tts_start:
     - lambda: |-
         id(voice_assistant_phase) = ${voice_assist_replying_phase_id};
-
+        id(lcd_display).backlight();
+        id(text_output) = x;
+  on_tts_end:
+    - lambda: |-
+        id(text_output) = "";
+        id(lcd_display).no_backlight();
     - script.execute: control_leds
     # Start a script that would potentially enable the stop word if the response is longer than a second
     - script.execute: activate_stop_word_once

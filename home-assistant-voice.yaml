@@ -32,7 +32,7 @@ esphome:
       # If the hardware switch is ON, force the software switch to be ON too. This covers the case where the Mute hardware switch is operated when the device is turned off
       - if:
           condition:
-            binary_sensor.is_on: hardware_mute_switch
+            switch.is_on: hardware_mute_switch
           then:
             - switch.template.publish:
                 id: master_mute_switch
@@ -173,7 +173,7 @@ switch:
     turn_on_action:
       - if:
           condition:
-            binary_sensor.is_off: hardware_mute_switch
+            switch.is_off: hardware_mute_switch
           then:
             - switch.template.publish:
                 id: master_mute_switch
@@ -181,7 +181,7 @@ switch:
     turn_off_action:
       - if:
           condition:
-            binary_sensor.is_off: hardware_mute_switch
+            switch.is_off: hardware_mute_switch
           then:
             - switch.template.publish:
                 id: master_mute_switch

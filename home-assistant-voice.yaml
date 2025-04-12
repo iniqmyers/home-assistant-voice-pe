@@ -164,8 +164,9 @@ globals:
 
 display:
   - platform: lcd_pcf8574
+    id: lcd_display
     dimensions: 16x2
-    #address: 0x27
+    address: 0x20
     lambda: |-
       it.print("Hello World!");
 
@@ -1722,7 +1723,10 @@ voice_assistant:
     - lambda: id(voice_assistant_phase) = ${voice_assist_thinking_phase_id};
     - script.execute: control_leds
   on_tts_start:
-    - lambda: id(voice_assistant_phase) = ${voice_assist_replying_phase_id};
+    - lambda: |-
+        id(voice_assistant_phase) = ${voice_assist_replying_phase_id};
+        it.print(x);
+
     - script.execute: control_leds
     # Start a script that would potentially enable the stop word if the response is longer than a second
     - script.execute: activate_stop_word_once

@@ -189,7 +189,7 @@ display:
       if (length1 > $lcd_width) length1 = $lcd_width;
       
       std::string line2 = id(text_output);
-      int length2 = strlen(line2);
+      int length2 = line2.size();
       if (length2 > $lcd_width) length2 = $lcd_width;
 
       int spacesLength = length1 >= $lcd_width ? 0 : $lcd_width - length1 + 1;

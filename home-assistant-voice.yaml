@@ -1725,7 +1725,7 @@ voice_assistant:
   on_tts_start:
     - lambda: |-
         id(voice_assistant_phase) = ${voice_assist_replying_phase_id};
-        id(lcd_display).it.print(x);
+        id(lcd_display).print(x);
 
     - script.execute: control_leds
     # Start a script that would potentially enable the stop word if the response is longer than a second

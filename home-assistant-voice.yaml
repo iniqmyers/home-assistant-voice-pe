@@ -17,6 +17,10 @@ substitutions:
   # Change this to true in case you ahve a hidden SSID at home.
   hidden_ssid: "false"
 
+  lcd_width: '16'
+  lcd_height: '2'
+  scroll_speed: 1s
+
 esphome:
   name: home-assistant-voice
   friendly_name: Home Assistant Voice
@@ -162,8 +166,15 @@ globals:
     restore_value: no
     initial_value: 'false'
 
+  - id: text_line1
+    type: std::string
+    initial_value: "Robo Voice"
+
   - id: text_output
     type: std::string
+    initial_value: "V1.0"
+
+
 
 display:
   - platform: lcd_pcf8574
@@ -171,6 +182,34 @@ display:
     dimensions: 16x2
     address: 0x27
     lambda: |-
+      static int p1 = 0;
+      static int p2 = 0;
+
+      // These lines could instead come from something like a text sensor.
+      char* line1 = id(text_line1);
+      int length1 = strlen(line1);
+      if (length1 > $lcd_width) length1 = $lcd_width;
+      
+      const char* line2 = id(text_output);
+      int length2 = strlen(line2);
+      if (length2 > $lcd_width) length2 = $lcd_width;
+
+      int spacesLength = length1 >= $lcd_width ? 0 : $lcd_width - length1 + 1;
+      char spaces[spacesLength];
+      for (int i = 0; i < spacesLength - 1; i++) spaces[i] = ' ';
+      spaces[spacesLength - 1] = '\0';
+      
+      it.printf("%.*s%s%.*s", length1, line1 + p1, spaces, length2, line2 + p2);
+
+      p1++;
+      if(p1 > (int)strlen(line1) - $lcd_width) {
+        p1 = 0;
+      }
+      p2++;
+      if(p2 > (int)strlen(line2) - $lcd_width) {
+        p2 = 0;
+      }
+
       it.print(id(text_output));
 
 
@@ -1730,14 +1769,11 @@ voice_assistant:
         id(voice_assistant_phase) = ${voice_assist_replying_phase_id};
         id(lcd_display).backlight();
         id(text_output) = x;
-  on_tts_end:
-    - lambda: |-
-        id(text_output) = "";
-        id(lcd_display).no_backlight();
     - script.execute: control_leds
     # Start a script that would potentially enable the stop word if the response is longer than a second
     - script.execute: activate_stop_word_once
   # When the voice assistant ends ...
+
   on_end:
     - wait_until:
         not:
@@ -1748,6 +1784,9 @@ voice_assistant:
         decibel_reduction: 0
         duration: 1.0s
     # If the end happened because of an error, let the error phase on for a second
+    - lambda: |-
+        id(text_output) = "";
+        id(lcd_display).no_backlight();
     - if:
         condition:
           lambda: return id(voice_assistant_phase) == ${voice_assist_error_phase_id};

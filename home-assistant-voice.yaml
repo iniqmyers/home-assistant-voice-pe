@@ -168,11 +168,9 @@ globals:
 
   - id: text_line1
     type: std::string
-    initial_value: "Robo Voice"
 
   - id: text_output
     type: std::string
-    initial_value: "V1.0"
 
 
 

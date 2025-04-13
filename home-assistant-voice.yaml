@@ -17,10 +17,6 @@ substitutions:
   # Change this to true in case you ahve a hidden SSID at home.
   hidden_ssid: "false"
 
-  lcd_width: '16'
-  lcd_height: '2'
-  scroll_speed: 1s
-
 esphome:
   name: home-assistant-voice
   friendly_name: Home Assistant Voice
@@ -32,7 +28,9 @@ esphome:
       # Run the script to refresh the LED status
       - script.execute: control_leds
       - delay: 1s
-      - switch.turn_on: internal_speaker_amp
+      #- switch.turn_on: internal_speaker_amp
+      - lambda: |-
+          id(lcd_display).no_backlight();
       # If the hardware switch is ON, force the software switch to be ON too. This covers the case where the Mute hardware switch is operated when the device is turned off
       - if:
           condition:
@@ -76,6 +74,7 @@ wifi:
   fast_connect: ${hidden_ssid}
   on_connect:
     - lambda: id(improv_ble_in_progress) = false;
+    - switch.turn_on: internal_speaker_amp
     - script.execute: control_leds
   on_disconnect:
     - script.execute: control_leds
@@ -105,7 +104,7 @@ i2c:
   - id: internal_i2c
     sda: GPIO15
     scl: GPIO16
-    frequency: 400kHz
+    frequency: 500kHz
 
 psram:
   mode: octal
@@ -1754,6 +1753,7 @@ voice_assistant:
         decibel_reduction: 0
         duration: 1.0s
     # If the end happened because of an error, let the error phase on for a second
+    - delay: 1s
     - lambda: |-
         id(text_output) = "";
         id(lcd_display).no_backlight();
